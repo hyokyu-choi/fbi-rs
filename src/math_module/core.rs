@@ -115,7 +115,7 @@ impl VectorSpace for Vector2 {
 
 impl InnerProduct for Vector2 {
     fn inner_product(&self, other: Self) -> Scalar {
-        self.0 * other.0 + self.1 + other.1
+        (self.0 * other.0) + (self.1 * other.1)
     }
 }
 
