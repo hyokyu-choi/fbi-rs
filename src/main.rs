@@ -1,4 +1,4 @@
-mod utils{
+mod utils {
     pub mod plot;
 }
 
@@ -13,7 +13,7 @@ mod math_module {
 
 use math_module::core::Scalar;
 use math_module::integrate::{RK4Method, Solver};
-use physics_module::harmonic_oscillator::{DHO};
+use physics_module::harmonic_oscillator::DHO;
 use utils::plot::plot_one;
 
 fn main() {
@@ -33,5 +33,11 @@ fn main() {
     let ys = sho_solver.get_ys_f64().iter().map(|x| x[0]).collect();
     let ys_prime = sho_solver.get_ys_prime_f64().iter().map(|x| x[0]).collect();
 
-    plot_one("Damped Harmonic Oscillation", ts, vec![ys, ys_prime], vec!["position", "velocity"], "plotters-doc-data/1.png");
+    plot_one(
+        "Damped Harmonic Oscillation",
+        ts,
+        vec![ys, ys_prime],
+        vec!["position", "velocity"],
+        "plotters-doc-data/1.png",
+    );
 }

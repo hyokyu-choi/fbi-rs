@@ -20,14 +20,16 @@ pub trait Integrator {
 }
 
 pub struct Solver<I, S>
-where I: Integrator, S: System
+where
+    I: Integrator,
+    S: System,
 {
     integrator: I,
     system: S,
     t: Scalar,
     y: S::Vector,
     y_prime: S::Vector,
-    results: Results<S>
+    results: Results<S>,
 }
 
 #[derive(Clone)]
@@ -39,7 +41,7 @@ pub struct Results<S: System> {
 
 impl<S: System> Results<S> {
     pub fn new(t0: Scalar, y0: S::Vector, y0_prime: S::Vector) -> Self {
-        Self{
+        Self {
             ts: vec![t0],
             ys: vec![y0],
             ys_prime: vec![y0_prime],
@@ -78,7 +80,7 @@ impl<S: System> Results<S> {
 }
 
 impl<I, S> Solver<I, S>
-where 
+where
     I: Integrator,
     S: System,
 {
@@ -95,7 +97,9 @@ where
 
     pub fn run(&mut self, h: Scalar, steps: usize) {
         for _ in 0..steps {
-            let (y, y_prime) = self.integrator.step(&self.system, self.t, self.y, self.y_prime, h);
+            let (y, y_prime) = self
+                .integrator
+                .step(&self.system, self.t, self.y, self.y_prime, h);
             self.t = self.t + h;
             self.y = y;
             self.y_prime = y_prime;

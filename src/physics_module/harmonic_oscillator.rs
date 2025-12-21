@@ -1,5 +1,5 @@
 use crate::math_module::core::Scalar;
-use crate::math_module::integrate::{System, EulerMethod, Integrator, RK4Method};
+use crate::math_module::integrate::{EulerMethod, Integrator, RK4Method, System};
 
 pub struct SHO {
     pub omega_square: Scalar,
