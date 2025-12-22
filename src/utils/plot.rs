@@ -4,8 +4,8 @@ pub fn plot_one(
     title: String,
     ts: Vec<f64>,
     datas: Vec<Vec<f64>>,
-    x_range: [f32; 2],
-    y_range: [f32; 2],
+    [x_min, x_max]: [f32; 2],
+    [y_min, y_max]: [f32; 2],
     labels: Vec<String>,
     save_file: String,
 ) -> Result<(), Box<dyn std::error::Error>> {
@@ -17,7 +17,7 @@ pub fn plot_one(
         .x_label_area_size(30)
         .y_label_area_size(30)
         .caption(title, ("sans-serif", 50).into_font())
-        .build_cartesian_2d(x_range[0]..x_range[1], y_range[0]..y_range[1])?;
+        .build_cartesian_2d(x_min..x_max, y_min..y_max)?;
 
     chart.configure_mesh().draw()?;
 
