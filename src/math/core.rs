@@ -133,7 +133,10 @@ impl VectorSpace for Vector2 {
         self.magnitude_square().sqrt()
     }
     fn normalize(&self) -> Self {
-        *self / self.magnitude()
+        match self.magnitude() {
+            Scalar(0.0) => Self::zero(),
+            _ => *self / self.magnitude(),
+        }
     }
 }
 
