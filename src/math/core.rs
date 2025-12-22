@@ -374,3 +374,124 @@ impl Div<f64> for Vector2 {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const EPS: f64 = 1e-10;
+
+    fn assert_scalar_eq(a: Scalar, b: Scalar) {
+        let diff = (a - b).abs();
+        assert!(diff < Scalar::new(EPS), "Assertion failed: {:?} != {:?} (diff: {})", a, b, diff);
+    }
+
+    fn assert_vector_eq(a: Vector2, b: Vector2) {
+        let diff_e0 = (a - b)[0].abs();
+        let diff_e1 = (a - b)[1].abs();
+        assert!(diff_e0 < Scalar::new(EPS) && diff_e1 < Scalar::new(EPS), "Assertion failed: {:?} != {:?}", a, b)
+    }
+
+    #[test]
+    fn test_scalar_op() {
+        let a = Scalar::new(2.0);
+        let b = Scalar::new(3.0);
+
+        // Scalar <op> Scalar
+        assert_scalar_eq(a + b, Scalar::new(5.0));
+        assert_scalar_eq(a - b, Scalar::new(-1.0));
+        assert_scalar_eq(a * b, Scalar::new(6.0));
+        assert_scalar_eq(a / b, Scalar::new(2.0 / 3.0));
+        
+        // Neg
+        assert_scalar_eq(-a, Scalar::new(-2.0));
+    }
+
+    #[test]
+    fn test_scalar_f64_op() {
+        let s = Scalar::new(2.0);
+        let f = 3.0;
+
+        // Scalar <op> f64
+        assert_scalar_eq(s + f, Scalar::new(5.0));
+        assert_scalar_eq(s - f, Scalar::new(-1.0));
+        assert_scalar_eq(s * f, Scalar::new(6.0));
+        assert_scalar_eq(s / f, Scalar::new(2.0 / 3.0));
+
+        // f64 <op> Scalar
+        assert_scalar_eq(f + s, Scalar::new(5.0));
+        assert_scalar_eq(f - s, Scalar::new(1.0));
+        assert_scalar_eq(f * s, Scalar::new(6.0));
+        assert_scalar_eq(f / s, Scalar::new(1.5));
+    }
+
+    #[test]
+    fn test_vector2_op() {
+        let v1 = Vector2::new(1.0, 2.0);
+        let v2 = Vector2::new(3.0, 4.0);
+
+        // Vector2 <op> Vector2
+        assert_vector_eq(v1 + v2, Vector2::new(4.0, 6.0));
+        assert_vector_eq(v1 - v2, Vector2::new(-2.0, -2.0));
+        assert_vector_eq(v1 * v2, Vector2::new(3.0, 8.0));
+        
+        // Neg
+        assert_vector_eq(-v1, Vector2::new(-1.0, -2.0));
+    }
+
+    #[test]
+    fn test_vector_scalar_op() {
+        let v = Vector2::new(1.0, 2.0);
+        let s = Scalar::new(2.0);
+        let f = 3.0;
+
+        // Mul
+        assert_vector_eq(v * s, Vector2::new(2.0, 4.0));
+        assert_vector_eq(s * v, Vector2::new(2.0, 4.0));
+        assert_vector_eq(v * f, Vector2::new(3.0, 6.0));
+        assert_vector_eq(f * v, Vector2::new(3.0, 6.0));
+        
+        // Div
+        assert_vector_eq(v / s, Vector2::new(1.0/2.0, 1.0));
+        assert_vector_eq(v / f, Vector2::new(1.0/3.0, 2.0/3.0));
+    }
+
+    #[test]
+    fn test_vector_magnitude() {
+        let v = Vector2::new(3.0, 4.0);
+
+        assert_scalar_eq(v.magnitude(), Scalar::new(5.0));
+        assert_scalar_eq(v.magnitude_square(), Scalar::new(25.0));
+    }
+
+    #[test]
+    fn test_vector_normalize() {
+        let v1 = Vector2::new(3.0, 4.0);
+        let v2 = Vector2::zero();
+
+        // Normalize
+        let v1_normalized = v1.normalize();
+        assert_scalar_eq(v1_normalized.magnitude(), Scalar::new(1.0));
+        assert_vector_eq(v1_normalized, Vector2::new(0.6, 0.8));
+
+        let v2_normalized = v2.normalize();
+        assert_scalar_eq(v2_normalized.magnitude(), Scalar::new(0.0));
+        assert_vector_eq(v2_normalized, Vector2::new(0.0, 0.0));
+    }
+
+    #[test]
+    fn test_inner_product() {
+        let v1 = Vector2::new(1.0, 0.0);
+        let v2 = Vector2::new(0.0, 1.0);
+        let v3 = Vector2::new(2.0, 2.0);
+
+        // Orthogonal
+        assert_scalar_eq(v1.inner_product(v2), Scalar::new(0.0));
+
+        // Parallel
+        assert_scalar_eq(v1.inner_product(v3), Scalar::new(2.0));
+        
+        // Self inner product
+        assert_scalar_eq(v3.inner_product(v3), v3.magnitude_square());
+    }
+}
