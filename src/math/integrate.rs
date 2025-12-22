@@ -58,8 +58,19 @@ impl<S: System> Results<S> {
         (self.ts[index], self.ys[index], self.ys_prime[index])
     }
 
-    pub fn get_f64(&self, index: usize) -> (f64, <S::Vector as LinearSpace>::Value, <S::Vector as LinearSpace>::Value) {
-        (self.ts[index].get_value(), self.ys[index].get_value(), self.ys_prime[index].get_value())
+    pub fn get_f64(
+        &self,
+        index: usize,
+    ) -> (
+        f64,
+        <S::Vector as LinearSpace>::Value,
+        <S::Vector as LinearSpace>::Value,
+    ) {
+        (
+            self.ts[index].get_value(),
+            self.ys[index].get_value(),
+            self.ys_prime[index].get_value(),
+        )
     }
 
     pub fn get_ts(&self) -> Vec<Scalar> {
