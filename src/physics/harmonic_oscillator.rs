@@ -1,40 +1,43 @@
-use crate::math::core::{Scalar, ScalarSpace};
+use crate::math::core::{LinearSpace, Scalar};
 use crate::math::integrate::{EulerMethod, RK4Method, System};
 
 pub struct SimpleHarmonicOscillator {
-    pub omega_square: Scalar,
+    pub omega_square: f64,
 }
 
 pub struct DampedHarmonicOscillator {
-    pub k: Scalar,
-    pub b: Scalar,
+    pub k: f64,
+    pub b: f64,
 }
 
 pub struct DrivenHarmonicOscillator {
-    pub k: Scalar,
-    pub b: Scalar,
-    pub f0: Scalar,
-    pub omega: Scalar,
+    pub k: f64,
+    pub b: f64,
+    pub f0: f64,
+    pub omega: f64,
 }
 
 impl System for SimpleHarmonicOscillator {
     type Vector = Scalar;
-    fn derivative(&self, _t: Scalar, y: Self::Vector, _y_prime: Self::Vector) -> Self::Vector {
+
+    fn derivative(&self, _t: f64, y: Self::Vector, _y_prime: Self::Vector) -> Self::Vector {
         -self.omega_square * y
     }
 }
 
 impl System for DampedHarmonicOscillator {
     type Vector = Scalar;
-    fn derivative(&self, _t: Scalar, y: Self::Vector, y_prime: Self::Vector) -> Self::Vector {
+
+    fn derivative(&self, _t: f64, y: Self::Vector, y_prime: Self::Vector) -> Self::Vector {
         -self.k * y - self.b * y_prime
     }
 }
 
 impl System for DrivenHarmonicOscillator {
     type Vector = Scalar;
-    fn derivative(&self, t: Scalar, y: Self::Vector, y_prime: Self::Vector) -> Self::Vector {
-        self.f0 * (self.omega * t).cos() - self.k * y - self.b * y_prime
+
+    fn derivative(&self, t: f64, y: Self::Vector, y_prime: Self::Vector) -> Self::Vector {
+        Self::Vector::new(self.f0 * (self.omega * t).cos()) - self.k * y - self.b * y_prime
     }
 }
 
@@ -46,18 +49,16 @@ mod tests {
 
     #[test]
     pub fn sho_test() {
-        type Method = RK4Method;
+        let method = RK4Method;
 
-        let sho_ode = SimpleHarmonicOscillator {
-            omega_square: Scalar(1.0),
-        };
+        let sho_ode = SimpleHarmonicOscillator { omega_square: 1.0 };
 
-        let y0 = Scalar(0.0);
-        let y0_prime = Scalar(1.0);
-        let h = Scalar(0.1);
+        let y0 = Scalar::new(0.0);
+        let y0_prime = Scalar::new(1.0);
+        let h = 0.1;
         let steps = 32;
 
-        let mut sho_solver = Solver::new(RK4Method, sho_ode, y0, y0_prime);
+        let mut sho_solver = Solver::new(method, sho_ode, y0, y0_prime);
         sho_solver.run(h, steps);
         let (ts, ys, ys_prime) = sho_solver.get_results_f64();
 
@@ -70,19 +71,16 @@ mod tests {
 
     #[test]
     pub fn dho_test() {
-        type Method = RK4Method;
+        let method = RK4Method;
 
-        let dho_ode = DampedHarmonicOscillator {
-            k: Scalar(1.0),
-            b: Scalar(10.0),
-        };
+        let dho_ode = DampedHarmonicOscillator { k: 1.0, b: 10.0 };
 
-        let y0 = Scalar(0.0);
-        let y0_prime = Scalar(1.0);
-        let h = Scalar(0.1);
+        let y0 = Scalar::new(0.0);
+        let y0_prime = Scalar::new(1.0);
+        let h = 0.1;
         let steps = 32;
 
-        let mut dho_solver = Solver::new(RK4Method, dho_ode, y0, y0_prime);
+        let mut dho_solver = Solver::new(method, dho_ode, y0, y0_prime);
         dho_solver.run(h, steps);
         let (ts, ys, ys_prime) = dho_solver.get_results_f64();
 
