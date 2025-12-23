@@ -161,13 +161,13 @@ impl fmt::Debug for Scalar {
 
 impl<const N: usize> fmt::Display for Vector<N> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Vector<N>({:.6}, {:.6})", self.data[0], self.data[1])
+        write!(f, "Vector<{N}>{:?}", self.data)
     }
 }
 
 impl<const N: usize> fmt::Debug for Vector<N> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "Vector<N>({:.6}, {:.6})", self.data[0], self.data[1])
+        write!(f, "Vector<{N}>{:?}", self.data)
     }
 }
 
