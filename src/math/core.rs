@@ -388,4 +388,24 @@ mod tests {
             "Vector Self Inner Product"
         );
     }
+
+    #[test]
+    fn test_outer_product() {
+        let e0 = Vector::new([1.0, 0.0, 0.0]);
+        let e1 = Vector::new([0.0, 1.0, 0.0]);
+        let e2 = Vector::new([0.0, 0.0, 1.0]);
+        let v = Vector::new([2.0, 2.0, 0.0]);
+
+        assert_eq!(e0.outer_product(e1), Vector::new([0.0, 0.0, 1.0]), "Vector Outer Product");
+        assert_eq!(e1.outer_product(e2), Vector::new([1.0, 0.0, 0.0]), "Vector Outer Product");
+        assert_eq!(e2.outer_product(e0), Vector::new([0.0, 1.0, 0.0]), "Vector Outer Product");
+
+        assert_eq!(e0.outer_product(v), Vector::new([0.0, 0.0, 2.0]), "Vector Outer Product");
+
+        assert_eq!(
+            e2.outer_product(e2),
+            Vector::zero(),
+            "Vector Self Outer Product"
+        );
+    }
 }
