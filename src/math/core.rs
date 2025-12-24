@@ -279,7 +279,7 @@ mod tests {
         assert_eq!(v1 + v2, Vector::new([4.0, 6.0, 8.0]), "Vector + Vector");
         assert_eq!(v1 - v2, Vector::new([-2.0, -2.0, -2.0]), "Vector - Vector");
 
-        assert_eq!(-v1, Vector::new([-1.0, -2.0, -3.0]), "Vector");
+        assert_eq!(-v1, Vector::new([-1.0, -2.0, -3.0]), "-Vector");
 
         assert_eq!(v1.dot(v2), 26.0, "Vector * Vector (Inner Product)");
         assert_eq!(v1 * r, Vector::new([3.0, 6.0, 9.0]), "Vector * f64");
