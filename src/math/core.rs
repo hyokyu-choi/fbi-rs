@@ -254,19 +254,19 @@ mod tests {
     fn test_vector_op() {
         let v1 = Vector::new([1.0, 2.0, 3.0]);
         let v2 = Vector::new([3.0, 4.0, 5.0]);
-        let f = 3.0;
+        let r = 3.0;
 
         assert_eq!(v1 + v2, Vector::new([4.0, 6.0, 8.0]), "Vector + Vector");
-        assert_eq!(v1 - v2, Vector::new([-2.0, -2.0, -2.0]), "Vector + Vector");
+        assert_eq!(v1 - v2, Vector::new([-2.0, -2.0, -2.0]), "Vector - Vector");
 
         assert_eq!(-v1, Vector::new([-1.0, -2.0, -3.0]), "Vector");
 
         assert_eq!(v1.dot(v2), 26.0, "Vector * Vector (Inner Product)");
-        assert_eq!(v1 * f, Vector::new([3.0, 6.0, 9.0]), "Vector * f64");
-        assert_eq!(f * v1, Vector::new([3.0, 6.0, 9.0]), "f64 * Vector");
+        assert_eq!(v1 * r, Vector::new([3.0, 6.0, 9.0]), "Vector * f64");
+        assert_eq!(r * v1, Vector::new([3.0, 6.0, 9.0]), "f64 * Vector");
 
         assert_eq!(
-            v1 / f,
+            v1 / r,
             Vector::new([1.0 / 3.0, 2.0 / 3.0, 1.0]),
             "Vector / f64"
         );
