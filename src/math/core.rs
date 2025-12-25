@@ -22,7 +22,7 @@ pub trait LinearSpace:
 
 pub trait ScalarSpace: LinearSpace + Mul<Output = Self> + Div<Output = Self> {
     fn one() -> Self;
-    fn abs_square(&self) -> f64;
+    fn abs_sq(&self) -> f64;
     fn abs(&self) -> f64;
     fn conj(&self) -> Self;
     fn powi(&self, n: i32) -> Self;
@@ -96,7 +96,7 @@ impl ScalarSpace for f64 {
     fn one() -> Self {
         1.0
     }
-    fn abs_square(&self) -> f64 {
+    fn abs_sq(&self) -> f64 {
         self * self
     }
     fn abs(&self) -> f64 {
@@ -137,7 +137,7 @@ impl<S: ScalarSpace, const N: usize> VectorSpace<S, N> for Vector<S, N> {
         self.data[index]
     }
     fn norm_sq(&self) -> f64 {
-        self.data.iter().map(|e| e.abs_square()).sum()
+        self.data.iter().map(|e| e.abs_sq()).sum()
     }
     fn norm(&self) -> f64 {
         self.norm_sq().sqrt()

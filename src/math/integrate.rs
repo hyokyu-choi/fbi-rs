@@ -257,15 +257,27 @@ impl Integrator for LeapfrogMethod {
 
 #[cfg(test)]
 mod tests {
+    use crate::math::complex::{Complex, ComplexSpace};
+    use crate::math::core::ScalarSpace;
+
     use super::*;
 
     const EPS: f64 = 1e-2;
 
     struct TestHarmonicOscillator;
+    struct TestComplexHarmonicOscillator;
 
     /// y'' + y = 0
     impl System for TestHarmonicOscillator {
         type Vector = f64;
+
+        fn derivative(&self, _t: f64, y: Self::Vector, _y_prime: Self::Vector) -> Self::Vector {
+            -y
+        }
+    }
+
+    impl System for TestComplexHarmonicOscillator {
+        type Vector = Complex<f64>;
 
         fn derivative(&self, _t: f64, y: Self::Vector, _y_prime: Self::Vector) -> Self::Vector {
             -y
@@ -386,5 +398,39 @@ mod tests {
         let error = (y - exact_y).abs();
 
         assert!(error < 1e-5, "Leapfrog method error too large: {}", error);
+    }
+
+    #[test]
+    fn test_leapfrog_with_complex() {
+        let integrator = LeapfrogMethod;
+        let system = TestComplexHarmonicOscillator;
+
+        let y0 = Complex::new(1.0, 0.0);
+        let y0_prime = Complex::new(0.0, 1.0);
+        let h = 0.01;
+        let steps = 100;
+
+        let initial_energy = 0.5 * y0_prime.abs_sq() + 0.5 * y0.abs_sq();
+
+        let mut test_solver = Solver::new(integrator, system, y0, y0_prime);
+        test_solver.run(h, steps);
+        let (_, y, _) = test_solver.get_current();
+
+        let exact_y = Complex::cis(1.0);
+        let error = (y - exact_y).abs();
+
+        assert!(error < 1e-4, "Leapfrog method error too large: {}", error);
+
+        let final_energy = 0.5 * y0_prime.abs_sq() + 0.5 * y0.abs_sq();
+
+        println!(
+            "Initial Energy: {}, Final Energy: {}, Error: {}",
+            initial_energy, final_energy, error
+        );
+
+        assert!(
+            error < 1e-4,
+            "LeapFrogMethod: Energy is not conserved (using Complex)"
+        );
     }
 }

@@ -58,7 +58,7 @@ impl ScalarSpace for Complex<f64> {
     fn one() -> Self {
         Self { re: 1.0, im: 0.0 }
     }
-    fn abs_square(&self) -> f64 {
+    fn abs_sq(&self) -> f64 {
         self.re * self.re + self.im * self.im
     }
     fn abs(&self) -> f64 {
