@@ -5,8 +5,8 @@ pub trait LinearSpace:
     Sized
     + Copy
     + Neg<Output = Self>
-    + Add<Self, Output = Self>
-    + Sub<Self, Output = Self>
+    + Add<Output = Self>
+    + Sub<Output = Self>
     + Mul<f64, Output = Self>
     + Div<f64, Output = Self>
     + fmt::Display
@@ -20,15 +20,12 @@ pub trait LinearSpace:
     fn get_data(&self) -> Self::Data;
 }
 
-pub trait ScalarSpace: LinearSpace + Mul<Output = Self> {
+pub trait ScalarSpace: LinearSpace + Mul<Output = Self> + Div<Output = Self> {
     fn one() -> Self;
     fn get(&self) -> Self;
     fn abs_square(&self) -> f64;
     fn abs(&self) -> f64;
     fn conj(&self) -> Self;
-    fn sqrt(&self) -> Self;
-    fn sin(&self) -> Self;
-    fn cos(&self) -> Self;
 }
 
 pub trait InnerProduct<S: ScalarSpace>: LinearSpace {
@@ -42,8 +39,8 @@ pub trait VectorSpace<S: ScalarSpace, const N: usize>:
 
     fn get(&self, index: usize) -> S;
 
-    fn magnitude(&self) -> f64;
-    fn magnitude_square(&self) -> f64;
+    fn norm(&self) -> f64;
+    fn norm_sq(&self) -> f64;
     fn normalize(&self) -> Self;
 }
 
@@ -110,15 +107,6 @@ impl ScalarSpace for f64 {
     fn conj(&self) -> Self {
         *self
     }
-    fn sqrt(&self) -> Self {
-        <f64>::sqrt(*self)
-    }
-    fn sin(&self) -> Self {
-        <f64>::sin(*self)
-    }
-    fn cos(&self) -> Self {
-        <f64>::cos(*self)
-    }
 }
 
 impl<S: ScalarSpace, const N: usize> LinearSpace for Vector<S, N> {
@@ -144,16 +132,16 @@ impl<S: ScalarSpace, const N: usize> VectorSpace<S, N> for Vector<S, N> {
     fn get(&self, index: usize) -> Self::Value {
         self.data[index]
     }
-    fn magnitude_square(&self) -> f64 {
+    fn norm_sq(&self) -> f64 {
         self.data.iter().map(|e| e.abs_square()).sum()
     }
-    fn magnitude(&self) -> f64 {
-        self.magnitude_square().sqrt()
+    fn norm(&self) -> f64 {
+        self.norm_sq().sqrt()
     }
     fn normalize(&self) -> Self {
-        match self.magnitude_square() {
+        match self.norm_sq() {
             0.0 => Self::zero(),
-            _ => *self / self.magnitude(),
+            _ => *self / self.norm(),
         }
     }
 }
@@ -296,8 +284,8 @@ mod tests {
     fn test_vector_magnitude() {
         let v = Vector::new([3.0, 4.0]);
 
-        assert_eq!(v.magnitude_square(), 25.0, "Vector.magnitude_square()");
-        assert_eq!(v.magnitude(), 5.0, "Vector.magnitude()");
+        assert_eq!(v.norm_sq(), 25.0, "Vector.norm_sq()");
+        assert_eq!(v.norm(), 5.0, "Vector.norm()");
     }
 
     #[test]
@@ -307,11 +295,11 @@ mod tests {
 
         // Normalize
         let v1_normalized = v1.normalize();
-        assert_eq!(v1_normalized.magnitude(), 1.0, "Vector.normalize()");
+        assert_eq!(v1_normalized.norm(), 1.0, "Vector.normalize()");
         assert_eq!(v1_normalized, Vector::new([0.6, 0.8]), "Vector.normalize()");
 
         let v2_normalized = v2.normalize();
-        assert_eq!(v2_normalized.magnitude(), 0.0, "Vector::zero().normalize()");
+        assert_eq!(v2_normalized.norm(), 0.0, "Vector::zero().normalize()");
         assert_eq!(
             v2_normalized,
             Vector::new([0.0, 0.0]),
@@ -332,11 +320,7 @@ mod tests {
 
         assert_eq!(v1.dot(v4), 2.0, "Vector Inner Product");
 
-        assert_eq!(
-            v3.dot(v3),
-            v3.magnitude_square(),
-            "Vector Self Inner Product"
-        );
+        assert_eq!(v3.dot(v3), v3.norm_sq(), "Vector Self Inner Product");
     }
 
     #[test]
