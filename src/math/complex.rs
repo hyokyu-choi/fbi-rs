@@ -20,19 +20,19 @@ pub trait ComplexSpace: ScalarSpace {
 
 #[derive(Clone, Copy, PartialEq)]
 #[repr(C)]
-pub struct Complex<S: ScalarSpace> {
-    re: S,
-    im: S,
+pub struct Complex {
+    re: f64,
+    im: f64,
 }
 
-impl<S: ScalarSpace> Complex<S> {
-    pub fn new(re: S, im: S) -> Self {
+impl Complex {
+    pub fn new(re: f64, im: f64) -> Self {
         Self { re: re, im: im }
     }
 }
 
-impl<S: ScalarSpace> LinearSpace for Complex<S> {
-    type Data = [S; 2];
+impl LinearSpace for Complex {
+    type Data = [f64; 2];
 
     fn new(data: Self::Data) -> Self {
         Self {
@@ -42,8 +42,8 @@ impl<S: ScalarSpace> LinearSpace for Complex<S> {
     }
     fn zero() -> Self {
         Self {
-            re: S::zero(),
-            im: S::zero(),
+            re: 0.0,
+            im: 0.0,
         }
     }
     fn size(&self) -> usize {
@@ -54,7 +54,7 @@ impl<S: ScalarSpace> LinearSpace for Complex<S> {
     }
 }
 
-impl ScalarSpace for Complex<f64> {
+impl ScalarSpace for Complex {
     fn one() -> Self {
         Self { re: 1.0, im: 0.0 }
     }
@@ -78,7 +78,7 @@ impl ScalarSpace for Complex<f64> {
     }
 }
 
-impl ComplexSpace for Complex<f64> {
+impl ComplexSpace for Complex {
     type Real = f64;
 
     fn i() -> Self {
@@ -110,19 +110,19 @@ impl ComplexSpace for Complex<f64> {
     }
 }
 
-impl<S: ScalarSpace> fmt::Display for Complex<S> {
+impl fmt::Display for Complex {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "Complex(re: {:?}, im: {:?})", self.re, self.im)
     }
 }
 
-impl<S: ScalarSpace> fmt::Debug for Complex<S> {
+impl fmt::Debug for Complex {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "Complex(re: {:?}, im: {:?})", self.re, self.im)
     }
 }
 
-impl<S: ScalarSpace> Neg for Complex<S> {
+impl Neg for Complex {
     type Output = Self;
 
     fn neg(self) -> Self::Output {
@@ -133,7 +133,7 @@ impl<S: ScalarSpace> Neg for Complex<S> {
     }
 }
 
-impl<S: ScalarSpace> Add for Complex<S> {
+impl Add for Complex {
     type Output = Self;
 
     fn add(self, rhs: Self) -> Self::Output {
@@ -144,7 +144,7 @@ impl<S: ScalarSpace> Add for Complex<S> {
     }
 }
 
-impl<S: ScalarSpace> Sub for Complex<S> {
+impl Sub for Complex {
     type Output = Self;
 
     fn sub(self, rhs: Self) -> Self::Output {
@@ -155,7 +155,7 @@ impl<S: ScalarSpace> Sub for Complex<S> {
     }
 }
 
-impl<S: ScalarSpace> Mul<f64> for Complex<S> {
+impl Mul<f64> for Complex {
     type Output = Self;
 
     fn mul(self, rhs: f64) -> Self::Output {
@@ -166,7 +166,7 @@ impl<S: ScalarSpace> Mul<f64> for Complex<S> {
     }
 }
 
-impl<S: ScalarSpace> Div<f64> for Complex<S> {
+impl Div<f64> for Complex {
     type Output = Self;
 
     fn div(self, rhs: f64) -> Self::Output {
@@ -177,7 +177,7 @@ impl<S: ScalarSpace> Div<f64> for Complex<S> {
     }
 }
 
-impl<S: ScalarSpace> Mul for Complex<S> {
+impl Mul for Complex {
     type Output = Self;
 
     fn mul(self, rhs: Self) -> Self::Output {
@@ -188,7 +188,7 @@ impl<S: ScalarSpace> Mul for Complex<S> {
     }
 }
 
-impl<S: ScalarSpace> Div for Complex<S> {
+impl Div for Complex {
     type Output = Self;
 
     fn div(self, rhs: Self) -> Self::Output {
@@ -199,10 +199,10 @@ impl<S: ScalarSpace> Div for Complex<S> {
     }
 }
 
-impl<S: ScalarSpace> Mul<Complex<S>> for f64 {
-    type Output = Complex<S>;
+impl Mul<Complex> for f64 {
+    type Output = Complex;
 
-    fn mul(self, rhs: Complex<S>) -> Self::Output {
+    fn mul(self, rhs: Complex) -> Self::Output {
         Self::Output {
             re: rhs.re * self,
             im: rhs.im * self,
@@ -210,10 +210,10 @@ impl<S: ScalarSpace> Mul<Complex<S>> for f64 {
     }
 }
 
-impl<S: ScalarSpace> Div<Complex<S>> for f64 {
-    type Output = Complex<S>;
+impl Div<Complex> for f64 {
+    type Output = Complex;
 
-    fn div(self, rhs: Complex<S>) -> Self::Output {
+    fn div(self, rhs: Complex) -> Self::Output {
         Self::Output {
             re: (rhs.re * self) / (rhs.re * rhs.re + rhs.im * rhs.im),
             im: (-rhs.im * self) / (rhs.re * rhs.re + rhs.im * rhs.im),
@@ -265,7 +265,7 @@ mod tests {
         assert_eq!(z.abs(), 5.0, "Complex Absolute");
         assert_eq!(z.conj(), Complex::new(3.0, -4.0), "Complex Conjugate");
         assert_eq!(
-            Complex::<f64>::one(),
+            Complex::one(),
             Complex::new(1.0, 0.0),
             "Complex::one()"
         );
