@@ -41,10 +41,7 @@ impl LinearSpace for Complex {
         }
     }
     fn zero() -> Self {
-        Self {
-            re: 0.0,
-            im: 0.0,
-        }
+        Self { re: 0.0, im: 0.0 }
     }
     fn size(&self) -> usize {
         1
@@ -112,13 +109,13 @@ impl ComplexSpace for Complex {
 
 impl fmt::Display for Complex {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Complex(re: {:?}, im: {:?})", self.re, self.im)
+        write!(f, "({:?} + {:?}i)", self.re, self.im)
     }
 }
 
 impl fmt::Debug for Complex {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "Complex(re: {:?}, im: {:?})", self.re, self.im)
+        write!(f, "({:?} + {:?}i)", self.re, self.im)
     }
 }
 
@@ -264,11 +261,7 @@ mod tests {
 
         assert_eq!(z.abs(), 5.0, "Complex Absolute");
         assert_eq!(z.conj(), Complex::new(3.0, -4.0), "Complex Conjugate");
-        assert_eq!(
-            Complex::one(),
-            Complex::new(1.0, 0.0),
-            "Complex::one()"
-        );
+        assert_eq!(Complex::one(), Complex::new(1.0, 0.0), "Complex::one()");
         assert_eq!(z.size(), 1, "Complex.size() Dimension (1)");
         assert_eq!(z.get_data(), [3.0, 4.0]);
     }

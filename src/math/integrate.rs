@@ -277,7 +277,7 @@ mod tests {
     }
 
     impl System for TestComplexHarmonicOscillator {
-        type Vector = Complex<f64>;
+        type Vector = Complex;
 
         fn derivative(&self, _t: f64, y: Self::Vector, _y_prime: Self::Vector) -> Self::Vector {
             -y

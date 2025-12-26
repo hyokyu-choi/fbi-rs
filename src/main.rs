@@ -8,11 +8,11 @@ mod physics {
 }
 
 mod math {
-    pub mod core;
     pub mod complex;
+    pub mod core;
+    pub mod fft;
     pub mod integrate;
     pub mod matrix;
-    pub mod fft;
 }
 
 use crate::math::integrate::{LeapfrogMethod, Solver};
