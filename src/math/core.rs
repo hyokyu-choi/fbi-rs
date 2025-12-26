@@ -50,27 +50,27 @@ pub trait CrossProduct<S: ScalarSpace, const N: usize>: VectorSpace<S, N> {
 }
 
 #[derive(Clone, Copy, PartialEq)]
-pub struct Vector<S: ScalarSpace, const N: usize> {
-    data: [S; N],
+pub struct Vector<L: LinearSpace, const N: usize> {
+    data: [L; N],
 }
 
-impl<S: ScalarSpace, const N: usize> Vector<S, N> {
-    pub fn as_array(&self) -> &[S; N] {
+impl<L: LinearSpace, const N: usize> Vector<L, N> {
+    pub fn as_array(&self) -> &[L; N] {
         &self.data
     }
-    pub fn as_slice(&self) -> &[S] {
-        &self.data
-    }
-}
-
-impl<S: ScalarSpace, const N: usize> AsRef<[S; N]> for Vector<S, N> {
-    fn as_ref(&self) -> &[S; N] {
+    pub fn as_slice(&self) -> &[L] {
         &self.data
     }
 }
 
-impl<S: ScalarSpace, const N: usize> AsRef<[S]> for Vector<S, N> {
-    fn as_ref(&self) -> &[S] {
+impl<L: LinearSpace, const N: usize> AsRef<[L; N]> for Vector<L, N> {
+    fn as_ref(&self) -> &[L; N] {
+        &self.data
+    }
+}
+
+impl<L: LinearSpace, const N: usize> AsRef<[L]> for Vector<L, N> {
+    fn as_ref(&self) -> &[L] {
         &self.data
     }
 }
