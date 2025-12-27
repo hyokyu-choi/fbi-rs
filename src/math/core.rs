@@ -113,14 +113,15 @@ impl ScalarSpace for f64 {
     }
 }
 
-impl<S: ScalarSpace, const N: usize> LinearSpace for Vector<S, N> {
-    type Data = [S; N];
+impl<L: LinearSpace, const N: usize> LinearSpace for Vector<L, N> {
+    type Data = [L; N];
 
     fn new(data: Self::Data) -> Self {
         Self { data: data }
     }
     fn zero() -> Self {
-        Self::new([S::zero(); N])
+        // Self::new([L::zero(); N])
+        Self::new(std::array::from_fn(|_| L::zero()))
     }
     fn size(&self) -> usize {
         N
@@ -150,15 +151,15 @@ impl<S: ScalarSpace, const N: usize> VectorSpace<S, N> for Vector<S, N> {
     }
 }
 
-impl<S: ScalarSpace, const N: usize> Index<usize> for Vector<S, N> {
-    type Output = S;
+impl<L: LinearSpace, const N: usize> Index<usize> for Vector<L, N> {
+    type Output = L;
 
     fn index(&self, index: usize) -> &Self::Output {
         &self.data[index]
     }
 }
 
-impl<S: ScalarSpace, const N: usize> IndexMut<usize> for Vector<S, N> {
+impl<L: LinearSpace, const N: usize> IndexMut<usize> for Vector<L, N> {
     fn index_mut(&mut self, index: usize) -> &mut Self::Output {
         &mut self.data[index]
     }
@@ -186,19 +187,19 @@ impl<S: ScalarSpace> CrossProduct<S, 3> for Vector<S, 3> {
     }
 }
 
-impl<S: ScalarSpace, const N: usize> fmt::Display for Vector<S, N> {
+impl<L: LinearSpace, const N: usize> fmt::Display for Vector<L, N> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Vector<{N}>{:?}", self.data)
+        write!(f, "{:?}", self.data)
     }
 }
 
-impl<S: ScalarSpace, const N: usize> fmt::Debug for Vector<S, N> {
+impl<L: LinearSpace, const N: usize> fmt::Debug for Vector<L, N> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "Vector<{N}>{:?}", self.data)
+        write!(f, "{:?}", self.data)
     }
 }
 
-impl<S: ScalarSpace, const N: usize> Neg for Vector<S, N> {
+impl<L: LinearSpace, const N: usize> Neg for Vector<L, N> {
     type Output = Self;
 
     fn neg(self) -> Self::Output {
@@ -208,7 +209,7 @@ impl<S: ScalarSpace, const N: usize> Neg for Vector<S, N> {
     }
 }
 
-impl<S: ScalarSpace, const N: usize> Add for Vector<S, N> {
+impl<L: LinearSpace, const N: usize> Add for Vector<L, N> {
     type Output = Self;
 
     fn add(self, rhs: Self) -> Self::Output {
@@ -218,7 +219,7 @@ impl<S: ScalarSpace, const N: usize> Add for Vector<S, N> {
     }
 }
 
-impl<S: ScalarSpace, const N: usize> Sub for Vector<S, N> {
+impl<L: LinearSpace, const N: usize> Sub for Vector<L, N> {
     type Output = Self;
 
     fn sub(self, rhs: Self) -> Self::Output {
@@ -228,7 +229,7 @@ impl<S: ScalarSpace, const N: usize> Sub for Vector<S, N> {
     }
 }
 
-impl<S: ScalarSpace, const N: usize> Mul<f64> for Vector<S, N> {
+impl<L: LinearSpace, const N: usize> Mul<f64> for Vector<L, N> {
     type Output = Self;
 
     fn mul(self, rhs: f64) -> Self::Output {
@@ -238,7 +239,7 @@ impl<S: ScalarSpace, const N: usize> Mul<f64> for Vector<S, N> {
     }
 }
 
-impl<S: ScalarSpace, const N: usize> Div<f64> for Vector<S, N> {
+impl<L: LinearSpace, const N: usize> Div<f64> for Vector<L, N> {
     type Output = Self;
 
     fn div(self, rhs: f64) -> Self::Output {
@@ -248,10 +249,10 @@ impl<S: ScalarSpace, const N: usize> Div<f64> for Vector<S, N> {
     }
 }
 
-impl<S: ScalarSpace, const N: usize> Mul<Vector<S, N>> for f64 {
-    type Output = Vector<S, N>;
+impl<L: LinearSpace, const N: usize> Mul<Vector<L, N>> for f64 {
+    type Output = Vector<L, N>;
 
-    fn mul(self, rhs: Vector<S, N>) -> Self::Output {
+    fn mul(self, rhs: Vector<L, N>) -> Self::Output {
         Self::Output {
             data: std::array::from_fn(|i| rhs.data[i] * self),
         }
